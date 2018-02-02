@@ -44,7 +44,7 @@ func (rh *RedirectHandler) RoundTrip(req *http.Request) (resp *http.Response, er
 }
 
 // Make a request to the given URL.
-func MakeRequest(s *State, fullUrl, cookie string) (*int, *int64) {
+func MakeRequest(s *State, fullUrl, cookie string, authorization string) (*int, *int64) {
 	req, err := http.NewRequest("GET", fullUrl, nil)
 
 	if err != nil {
@@ -53,6 +53,10 @@ func MakeRequest(s *State, fullUrl, cookie string) (*int, *int64) {
 
 	if cookie != "" {
 		req.Header.Set("Cookie", cookie)
+	}
+
+	if authorization != "" {
+		req.Header.Set("Authorization", authorization)
 	}
 
 	if s.UserAgent != "" {
@@ -100,13 +104,13 @@ func MakeRequest(s *State, fullUrl, cookie string) (*int, *int64) {
 
 // Small helper to combine URL with URI then make a
 // request to the generated location.
-func GoGet(s *State, url, uri, cookie string) (*int, *int64) {
-	return MakeRequest(s, url+uri, cookie)
+func GoGet(s *State, url, uri, cookie string, authorization string) (*int, *int64) {
+	return MakeRequest(s, url+uri, cookie, authorization)
 }
 
 func SetupDir(s *State) bool {
 	guid := uuid.Must(uuid.NewV4())
-	wildcardResp, _ := GoGet(s, s.Url, fmt.Sprintf("%s", guid), s.Cookies)
+	wildcardResp, _ := GoGet(s, s.Url, fmt.Sprintf("%s", guid), s.Cookies, s.Authorization)
 
 	if s.StatusCodes.Contains(*wildcardResp) {
 		s.IsWildcard = true
@@ -127,7 +131,7 @@ func ProcessDirEntry(s *State, word string, resultChan chan<- Result) {
 	}
 
 	// Try the DIR first
-	dirResp, dirSize := GoGet(s, s.Url, word+suffix, s.Cookies)
+	dirResp, dirSize := GoGet(s, s.Url, word+suffix, s.Cookies, s.Authorization)
 	if dirResp != nil {
 		resultChan <- Result{
 			Entity: word + suffix,
@@ -139,7 +143,7 @@ func ProcessDirEntry(s *State, word string, resultChan chan<- Result) {
 	// Follow up with files using each ext.
 	for ext := range s.Extensions {
 		file := word + s.Extensions[ext]
-		fileResp, fileSize := GoGet(s, s.Url, file, s.Cookies)
+		fileResp, fileSize := GoGet(s, s.Url, file, s.Cookies, s.Authorization)
 
 		if fileResp != nil {
 			resultChan <- Result{

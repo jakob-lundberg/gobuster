@@ -20,7 +20,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/OJ/gobuster/libgobuster"
+	"./libgobuster"
 )
 
 // Parse all the command line options into a settings
@@ -40,6 +40,7 @@ func ParseCmdLine() *libgobuster.State {
 	flag.StringVar(&s.OutputFileName, "o", "", "Output file to write results to (defaults to stdout)")
 	flag.StringVar(&s.Url, "u", "", "The target URL or Domain")
 	flag.StringVar(&s.Cookies, "c", "", "Cookies to use for the requests (dir mode only)")
+	flag.StringVar(&s.Authorization, "A", "", "Authorization to use for the requests (dir mode only)")
 	flag.StringVar(&s.Username, "U", "", "Username for Basic Auth (dir mode only)")
 	flag.StringVar(&s.Password, "P", "", "Password for Basic Auth (dir mode only)")
 	flag.StringVar(&extensions, "x", "", "File extension(s) to search for (dir mode only)")

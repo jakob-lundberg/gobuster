@@ -69,6 +69,10 @@ func ShowConfig(s *State) {
 				fmt.Printf("[+] Cookies      : %s\n", s.Cookies)
 			}
 
+			if s.Authorization != "" {
+				fmt.Printf("[+] Authorization: %s\n", s.Authorization)
+			}
+
 			if s.UserAgent != "" {
 				fmt.Printf("[+] User Agent   : %s\n", s.UserAgent)
 			}

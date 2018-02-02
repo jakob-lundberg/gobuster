@@ -38,6 +38,7 @@ type StringSet struct {
 type State struct {
 	Client         *http.Client
 	Cookies        string
+	Authorization  string
 	Expanded       bool
 	Extensions     []string
 	FollowRedirect bool

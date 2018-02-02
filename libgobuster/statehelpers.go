@@ -195,7 +195,7 @@ func ValidateDirModeState(
 				},
 			}}
 
-		code, _ := GoGet(s, s.Url, "", s.Cookies)
+		code, _ := GoGet(s, s.Url, "", s.Cookies, s.Authorization)
 		if code == nil {
 			errorList = multierror.Append(errorList, fmt.Errorf("[-] Unable to connect: %s", s.Url))
 		}
